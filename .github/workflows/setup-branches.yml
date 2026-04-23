@@ -1,0 +1,40 @@
+name: Setup Branches
+
+on:
+  push:
+    branches:
+      - copilot/create-master-and-empty-main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  setup-branches:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
+      - name: Create or update master branch with README.md
+        run: |
+          git checkout -B master
+          git push origin master --force
+
+      - name: Create empty main branch
+        run: |
+          git checkout --orphan empty-main-temp
+          git rm -rf . || true
+          git commit --allow-empty -m "Initial empty commit"
+          git push origin empty-main-temp:main --force
+          git branch -D empty-main-temp
+
+
