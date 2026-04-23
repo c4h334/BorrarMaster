@@ -39,4 +39,3 @@ jobs:
           EMPTY_TREE=$(git hash-object -t tree --stdin < /dev/null)
           EMPTY_COMMIT=$(git commit-tree "$EMPTY_TREE" -m "Initial empty commit")
           git push origin "${EMPTY_COMMIT}:refs/heads/main" --force
-
